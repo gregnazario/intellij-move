@@ -82,6 +82,9 @@
                          enabledByDefault="true" level="ERROR"
                          implementationClass="org.move.ide.inspections.MoveUnresolvedReferenceInspection"/>
 
+        <editorNotificationProvider
+                implementation="org.move.ide.notifications.NoDoveProjectFoundNotificationProvider"/>
+
         <!-- Color Settings -->
         <colorSettingsPage implementation="org.move.ide.colors.MoveColorSettingsPage"/>
 
@@ -95,6 +98,7 @@
                              id="language.move"/>
         <projectService serviceInterface="org.move.project.settings.MoveProjectSettingsService"
                         serviceImplementation="org.move.project.settings.impl.MoveProjectSettingsServiceImpl"/>
+        <projectService serviceImplementation="org.move.dove.project.model.DoveProjectService" />
 
     </extensions>
 
