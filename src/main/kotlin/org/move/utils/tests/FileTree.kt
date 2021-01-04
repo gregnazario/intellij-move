@@ -41,7 +41,7 @@ fun fileTreeFromText(@Language("Move") text: String): FileTree {
         .map { it.trimIndent() }
 
     check(fileNames.size == fileTexts.size) {
-        "Have you placed `//- filename.rs` markers?"
+        "Have you placed `//- filename.move` markers?"
     }
 
     fun fill(dir: Entry.Directory, path: List<String>, contents: String) {

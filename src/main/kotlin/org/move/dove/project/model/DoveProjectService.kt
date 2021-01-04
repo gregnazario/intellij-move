@@ -4,17 +4,22 @@ import com.intellij.openapi.application.invokeAndWaitIfNeeded
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import com.intellij.util.io.exists
 import com.intellij.util.messages.Topic
+import org.jetbrains.annotations.TestOnly
 import org.move.dove.DoveConstants
 import org.move.openapiext.common.isUnitTestMode
 import org.move.openapiext.rootDir
+import java.nio.file.Paths
 
 class DoveProjectService(val project: Project) {
+    var testsCrossFileResolutionEnabled: Boolean = false
+
     init {
         with(project.messageBus.connect()) {
             if (!isUnitTestMode) {
@@ -33,10 +38,18 @@ class DoveProjectService(val project: Project) {
         }
     }
 
-    fun manifestFileExists(): Boolean {
-        val rootDir = project.rootDir
-        val manifestFile = rootDir.resolve(DoveConstants.MANIFEST_FILE)
-        return manifestFile.exists()
+    fun isConfigured(): Boolean {
+        if (isUnitTestMode && testsCrossFileResolutionEnabled) return true
+        return moduleDirs().isNotEmpty()
+    }
+
+    fun moduleDirs(): List<VirtualFile> {
+        val vfm = VirtualFileManager.getInstance()
+        val projectRoot = project.basePath?.let { vfm.findFileByNioPath(Paths.get(it)) } ?: return emptyList()
+        return listOfNotNull(
+            projectRoot.findFileByRelativePath("modules"),
+            projectRoot.findFileByRelativePath("stdlib")
+        )
     }
 
     fun emitDoveProjectUpdatedEvent() {
@@ -61,6 +74,8 @@ class DoveProjectService(val project: Project) {
 }
 
 val Project.doveProjectService get() = service<DoveProjectService>()
+
+val Project.enabledCrossFileResolution get() = doveProjectService.isConfigured()
 
 private fun VFileEvent.pathEndsWith(suffix: String): Boolean =
     path.endsWith(suffix) ||

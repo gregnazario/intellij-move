@@ -4,8 +4,11 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
+import org.move.dove.project.model.doveProjectService
+import org.move.dove.project.model.enabledCrossFileResolution
 import org.move.lang.core.psi.*
 import org.move.lang.core.psi.ext.*
+import org.move.lang.core.resolve.ref.MoveQualPathReferenceImpl
 
 class MoveUnresolvedReferenceInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor =
@@ -13,6 +16,7 @@ class MoveUnresolvedReferenceInspection : LocalInspectionTool() {
             override fun visitModuleRef(moduleRef: MoveModuleRef) {
                 if (moduleRef.ancestorStrict<MoveImportStatement>() != null) return
                 if (moduleRef is MoveFullyQualifiedModuleRef) return
+                if (!moduleRef.project.doveProjectService.isConfigured()) return
 
                 if (moduleRef.isUnresolved) {
                     holder.registerProblem(
@@ -25,6 +29,14 @@ class MoveUnresolvedReferenceInspection : LocalInspectionTool() {
             override fun visitQualPath(qualPath: MoveQualPath) {
                 val refElement = qualPath.parent
                 if (refElement !is MoveQualPathReferenceElement) return
+                if (refElement.isPrimitive) return
+
+                val resolved = refElement.reference.resolve() != null
+                if (!resolved && !refElement.project.enabledCrossFileResolution) {
+                    // try to resolve to import only
+                    val ref = refElement.reference
+                    if (ref !is MoveQualPathReferenceImpl<*> || ref.resolveToItemImport() != null) return
+                }
 
                 if (refElement.isUnresolved && qualPath.isIdentifierOnly) {
                     val highlightedElement = refElement.referenceNameElement

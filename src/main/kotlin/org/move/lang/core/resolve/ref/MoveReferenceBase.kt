@@ -5,15 +5,19 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import org.move.ide.refactoring.isValidMoveVariableIdentifier
 import org.move.lang.MoveElementTypes.IDENTIFIER
+import org.move.lang.core.psi.MoveItemImport
 import org.move.lang.core.psi.MoveNamedElement
 import org.move.lang.core.psi.MovePsiFactory
 import org.move.lang.core.psi.MoveReferenceElement
 import org.move.lang.core.psi.ext.elementType
+import org.move.lang.core.resolve.resolveItem
 
 abstract class MoveReferenceBase<T : MoveReferenceElement>(element: T) : PsiReferenceBase<T>(element),
                                                                          MoveReference {
 
     open val T.referenceAnchor: PsiElement get() = referenceNameElement
+
+    open fun resolveToItemImport(): MoveItemImport? = null
 
     abstract override fun resolve(): MoveNamedElement?
 //    abstract fun resolveVerbose(): ResolveEngine.ResolveResult

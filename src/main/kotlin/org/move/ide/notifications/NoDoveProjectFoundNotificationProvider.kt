@@ -33,7 +33,7 @@ class NoDoveProjectFoundNotificationProvider(project: Project) : MoveNotificatio
         if (isUnitTestMode && !isDispatchThread) return null
         if (!(file.isMoveFile || file.isDoveToml) || isNotificationDisabled(file)) return null
 
-        if (!project.doveProjectService.manifestFileExists()) {
+        if (!project.doveProjectService.isConfigured()) {
             return createNoDoveProjectFoundPanel(file)
         }
 

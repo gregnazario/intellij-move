@@ -6,11 +6,8 @@ import com.intellij.patterns.ElementPattern
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import org.move.lang.core.MovePsiPatterns
-import org.move.lang.core.psi.MoveFullyQualifiedModuleRef
 import org.move.lang.core.psi.MoveQualPathReferenceElement
-import org.move.lang.core.psi.ext.address
 import org.move.lang.core.resolve.processItems
-import org.move.lang.core.resolve.processQualModuleRef
 import org.move.lang.core.resolve.ref.Namespace
 
 object ModulesCompletionProvider : MoveCompletionProvider() {

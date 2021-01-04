@@ -13,6 +13,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.intellij.lang.annotations.Language
+import org.move.dove.project.model.doveProjectService
 import org.move.utils.tests.base.MoveTestCase
 import org.move.utils.tests.base.TestCase
 
@@ -21,7 +22,6 @@ abstract class MoveTestBase : BasePlatformTestCase(),
     protected val fileName: String
         get() = "${getTestName(true)}.$testFileExtension"
     open val dataPath: String = ""
-
     override fun getTestDataPath(): String = "${TestCase.testResourcesPath}/$dataPath"
     override fun getTestName(lowercaseFirstLetter: Boolean): String {
         val camelCase = super.getTestName(lowercaseFirstLetter)

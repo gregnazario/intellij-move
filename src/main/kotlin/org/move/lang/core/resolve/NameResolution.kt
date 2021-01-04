@@ -7,6 +7,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiRecursiveVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiUtilCore
+import org.move.dove.project.model.doveProjectService
 import org.move.lang.MoveFile
 import org.move.lang.core.psi.*
 import org.move.lang.core.psi.ext.*
@@ -119,14 +120,8 @@ fun processQualModuleRef(
     processor: MatchingProcessor,
 ): Boolean {
     val project = qualModuleRef.project
-    val vfm = VirtualFileManager.getInstance()
-    val projectRoot = project.basePath?.let { vfm.findFileByNioPath(Paths.get(it)) }
-        ?: return true
+    val dirs = project.doveProjectService.moduleDirs()
 
-    val dirs = listOfNotNull(
-        projectRoot.findFileByRelativePath("modules"),
-        projectRoot.findFileByRelativePath("stdlib")
-    )
     var isResolved = false
     for (modulesDir in dirs) {
         if (isResolved) break

@@ -1,5 +1,6 @@
-package org.move.ide.inspections
+package org.move.ide.inspections.unresolved_ref
 
+import org.move.ide.inspections.MoveUnresolvedReferenceInspection
 import org.move.utils.tests.annotation.InspectionsTestCase
 
 class UnresolvedReferenceInspectionTest : InspectionsTestCase(MoveUnresolvedReferenceInspection::class) {
@@ -13,16 +14,6 @@ class UnresolvedReferenceInspectionTest : InspectionsTestCase(MoveUnresolvedRefe
 
     fun `test unresolved function call`() = checkByText("""
         module M {
-            fun main() {
-                <error descr="Unresolved reference: `call`">call</error>();
-            }
-        }
-    """)
-
-    fun `test test unresolved module member`() = checkByText("""
-        script {
-            use 0x1::MyModule::call;
-
             fun main() {
                 <error descr="Unresolved reference: `call`">call</error>();
             }
@@ -109,26 +100,6 @@ class UnresolvedReferenceInspectionTest : InspectionsTestCase(MoveUnresolvedRefe
 
             fun main() {
                 let T { <error descr="Unresolved field: `my_unknown_field`">my_unknown_field</error> } = T { };
-            }
-        }
-    """
-    )
-
-    fun `test unresolved reference to module`() = checkByText(
-        """
-        module M {
-            fun main() {
-                let t = <error descr="Unresolved module reference: `Transaction`">Transaction</error>::create();
-            }
-        }
-    """
-    )
-
-    fun `test no unresolved reference for fully qualified module`() = checkByText(
-        """
-        module M {
-            fun main() {
-                0x1::Debug::print(1);
             }
         }
     """

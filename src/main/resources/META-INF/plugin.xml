@@ -82,8 +82,8 @@
                          enabledByDefault="true" level="ERROR"
                          implementationClass="org.move.ide.inspections.MoveUnresolvedReferenceInspection"/>
 
-        <editorNotificationProvider
-                implementation="org.move.ide.notifications.NoDoveProjectFoundNotificationProvider"/>
+<!--        <editorNotificationProvider-->
+<!--                implementation="org.move.ide.notifications.NoDoveProjectFoundNotificationProvider"/>-->
 
         <!-- Color Settings -->
         <colorSettingsPage implementation="org.move.ide.colors.MoveColorSettingsPage"/>

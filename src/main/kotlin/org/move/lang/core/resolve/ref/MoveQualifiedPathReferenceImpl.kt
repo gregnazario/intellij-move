@@ -11,6 +11,11 @@ class MoveQualPathReferenceImpl<T : MoveQualPathReferenceElement>(
     private val namespace: Namespace,
 ) : MoveReferenceBase<T>(qualPathRefElement) {
 
+    override fun resolveToItemImport(): MoveItemImport? {
+        val resolved = resolveItem(element, namespace)
+        return resolved as? MoveItemImport
+    }
+
     override fun resolve(): MoveNamedElement? {
         val moduleRef = element.qualPath.moduleRef
         val qualModuleRef =
